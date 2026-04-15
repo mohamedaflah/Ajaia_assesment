@@ -34,11 +34,7 @@ async function listDocsForUser(userId) {
         .select({ title: 1, updatedAt: 1, createdAt: 1, owner: 1 })
         .sort({ updatedAt: -1 })
         .lean();
-    const shared = await Document_1.DocumentModel.find({ "collaborators.user": toObjectId(userId) })
-        .select({ title: 1, updatedAt: 1, createdAt: 1, owner: 1 })
-        .sort({ updatedAt: -1 })
-        .lean();
-    return { owned, shared };
+    return { owned };
 }
 async function createDoc(userId, input) {
     const created = await Document_1.DocumentModel.create({

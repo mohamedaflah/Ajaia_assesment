@@ -14,6 +14,7 @@ const documentSchema = new mongoose_1.default.Schema({
     content: { type: mongoose_1.default.Schema.Types.Mixed, required: true }, // TipTap JSON
     owner: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "User", required: true, index: true },
     collaborators: { type: [collaboratorSchema], default: [] },
+    shareToken: { type: String, default: null, index: true, sparse: true },
 }, { timestamps: true });
 exports.DocumentModel = mongoose_1.default.models.Document ||
     mongoose_1.default.model("Document", documentSchema);
