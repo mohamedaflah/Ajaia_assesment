@@ -1,43 +1,35 @@
-import mongoose from "mongoose";
+import crypto from "crypto";
 import { ApiError } from "../utils/ApiError";
 import { DocumentModel } from "../models/Document";
-import { UserModel } from "../models/User";
 
-function toObjectId(id: string) {
-  return new mongoose.Types.ObjectId(id);
-}
-
-export async function shareDoc(
-  documentId: string,
-  ownerId: string,
-  collaboratorEmail: string,
-  permission: "read" | "write"
-) {
-  const doc = await DocumentModel.findById(documentId).select({ owner: 1 }).lean();
+/**
+ * Toggle public sharing for a document. If already shared, revoke.
+ * If not shared, generate a new random token.
+ */
+export async function toggleShareLink(documentId: string, ownerId: string) {
+  const doc = await DocumentModel.findById(documentId).select({ owner: 1, shareToken: 1 }).lean();
   if (!doc) throw new ApiError(404, "Document not found");
   if (String(doc.owner) !== ownerId) throw new ApiError(403, "Only owner can share");
 
-  const user = await UserModel.findOne({ email: collaboratorEmail.toLowerCase().trim() })
-    .select({ _id: 1 })
-    .lean();
-  if (!user) throw new ApiError(404, "User not found");
-  if (String(user._id) === ownerId) throw new ApiError(400, "Owner already has access");
-
-  await DocumentModel.updateOne(
-    { _id: toObjectId(documentId) },
-    {
-      $pull: { collaborators: { user: user._id } },
-    }
-  );
-  const updated = await DocumentModel.findByIdAndUpdate(
-    documentId,
-    {
-      $addToSet: { collaborators: { user: user._id, permission } },
-    },
-    { new: true }
-  ).lean();
-
-  if (!updated) throw new ApiError(404, "Document not found");
-  return updated;
+  if (doc.shareToken) {
+    // Revoke: remove the token
+    await DocumentModel.updateOne({ _id: documentId }, { $set: { shareToken: null } });
+    return { shareToken: null, shared: false };
+  } else {
+    // Generate a new share token
+    const token = crypto.randomBytes(16).toString("hex");
+    await DocumentModel.updateOne({ _id: documentId }, { $set: { shareToken: token } });
+    return { shareToken: token, shared: true };
+  }
 }
 
+/**
+ * Get a document by its public share token. No auth required.
+ */
+export async function getDocByShareToken(token: string) {
+  const doc = await DocumentModel.findOne({ shareToken: token })
+    .select({ title: 1, content: 1, shareToken: 1, createdAt: 1, updatedAt: 1 })
+    .lean();
+  if (!doc) throw new ApiError(404, "Document not found or link expired");
+  return doc;
+}

@@ -1,9 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
-import { shareDoc, type DocPermission } from "../lib/api";
+import { useState } from "react";
+import { toggleShare } from "../lib/api";
 import { queryClient } from "../lib/queryClient";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import {
   Dialog,
   DialogContent,
@@ -13,33 +12,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { Share2, Users, Mail } from "lucide-react";
-
-type Collaborator = { user: string; permission: DocPermission };
+import { Share2, Link2, Copy, Check, Unlink } from "lucide-react";
 
 export function ShareModal(props: {
   docId: string;
-  collaborators?: Collaborator[];
+  shareToken?: string | null;
 }) {
-  const [email, setEmail] = useState("");
-  const [permission, setPermission] = useState<DocPermission>("read");
   const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const mutation = useMutation({
-    mutationFn: () => shareDoc(props.docId, email, permission),
+    mutationFn: () => toggleShare(props.docId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["doc", props.docId] });
-      setEmail("");
-      setPermission("read");
     },
   });
 
-  const errorText = useMemo(() => {
-    if (!mutation.isError) return null;
-    return mutation.error instanceof Error ? mutation.error.message : "Share failed";
-  }, [mutation.isError, mutation.error]);
+  const shareToken = props.shareToken;
+  const shareUrl = shareToken
+    ? `${window.location.origin}/shared/${shareToken}`
+    : null;
 
-  const collabs = props.collaborators ?? [];
+  const handleCopy = async () => {
+    if (!shareUrl) return;
+    await navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -47,108 +46,86 @@ export function ShareModal(props: {
         <Button variant="outline" className="gap-2">
           <Share2 className="h-4 w-4" />
           Share
-          {collabs.length > 0 && (
-            <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-100 px-1.5 text-xs font-medium text-indigo-600">
-              {collabs.length}
-            </span>
-          )}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Share document</DialogTitle>
-          <DialogDescription>Invite people to read or edit this document.</DialogDescription>
+          <DialogDescription>
+            Generate a public link anyone can use to view this document.
+          </DialogDescription>
         </DialogHeader>
 
-        {/* Current collaborators */}
-        {collabs.length > 0 && (
-          <div className="mt-4">
-            <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-              People with access
-            </h4>
-            <div className="space-y-2 max-h-40 overflow-y-auto">
-              {collabs.map((c, i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2"
-                >
-                  <div className="flex items-center gap-2 text-sm text-slate-700">
-                    <Users className="h-3.5 w-3.5 text-slate-400" />
-                    <span className="font-mono text-xs truncate max-w-[200px]">{c.user}</span>
-                  </div>
-                  <span
-                    className={`text-xs font-medium rounded-full px-2 py-0.5 ${
-                      c.permission === "write"
-                        ? "bg-emerald-50 text-emerald-600"
-                        : "bg-blue-50 text-blue-600"
-                    }`}
-                  >
-                    {c.permission === "write" ? "Can edit" : "Read only"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <div className="mt-4 space-y-4">
+          {shareUrl ? (
+            <>
+              {/* Active link */}
+              <div className="flex items-center gap-2">
+                <Link2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">Public link active</span>
+              </div>
 
-        {/* Invite new */}
-        <div className="mt-4 space-y-4 border-t border-slate-100 pt-4">
-          <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-            Invite someone
-          </h4>
-          <div>
-            <label className="text-sm font-medium text-slate-700">Email address</label>
-            <div className="relative mt-1.5">
-              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <Input
-                className="pl-9"
-                placeholder="colleague@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-slate-700">Permission level</label>
-            <div className="mt-2 flex gap-2">
+              <div className="flex items-stretch border-2 border-slate-300 bg-slate-50">
+                <input
+                  readOnly
+                  value={shareUrl}
+                  className="flex-1 bg-transparent px-3 py-2 text-sm font-mono text-slate-700 outline-none truncate"
+                />
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="border-l-2 border-slate-300 px-3 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider hover:bg-slate-100 transition-colors"
+                  title="Copy link"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-3.5 w-3.5 text-emerald-500" />
+                      <span className="text-emerald-600">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-3.5 w-3.5 text-slate-500" />
+                      <span className="text-slate-600">Copy</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
               <Button
-                type="button"
-                size="sm"
-                variant={permission === "read" ? "default" : "outline"}
-                onClick={() => setPermission("read")}
+                variant="outline"
+                className="w-full gap-2 text-red-500 hover:text-red-600 hover:border-red-300"
+                disabled={mutation.isPending}
+                onClick={() => mutation.mutate()}
               >
-                Read only
+                <Unlink className="h-4 w-4" />
+                {mutation.isPending ? "Revoking…" : "Revoke link"}
               </Button>
+            </>
+          ) : (
+            <>
+              {/* No link yet */}
+              <div className="border-2 border-dashed border-slate-300 bg-white px-4 py-6 text-center">
+                <Link2 className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                <p className="text-sm text-slate-500">
+                  No public link yet. Generate one to share this document.
+                </p>
+              </div>
+
               <Button
-                type="button"
-                size="sm"
-                variant={permission === "write" ? "default" : "outline"}
-                onClick={() => setPermission("write")}
+                className="w-full gap-2"
+                disabled={mutation.isPending}
+                onClick={() => mutation.mutate()}
               >
-                Can edit
+                <Link2 className="h-4 w-4" />
+                {mutation.isPending ? "Generating…" : "Generate public link"}
               </Button>
-            </div>
-          </div>
-          {errorText && (
-            <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{errorText}</p>
-          )}
-          {mutation.isSuccess && (
-            <p className="text-sm text-emerald-600 bg-emerald-50 rounded-lg px-3 py-2">
-              Shared successfully!
-            </p>
+            </>
           )}
         </div>
 
         <DialogFooter>
           <Button type="button" variant="outline" onClick={() => setOpen(false)}>
             Done
-          </Button>
-          <Button
-            type="button"
-            disabled={!email.trim() || mutation.isPending}
-            onClick={() => mutation.mutate()}
-          >
-            {mutation.isPending ? "Sharing…" : "Share"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -14,6 +14,7 @@ const documentSchema = new mongoose.Schema(
     content: { type: mongoose.Schema.Types.Mixed, required: true }, // TipTap JSON
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true, index: true },
     collaborators: { type: [collaboratorSchema], default: [] },
+    shareToken: { type: String, default: null, index: true, sparse: true },
   },
   { timestamps: true }
 );
@@ -25,4 +26,3 @@ export type Document = InferSchemaType<typeof documentSchema> & {
 export const DocumentModel =
   (mongoose.models.Document as mongoose.Model<Document>) ||
   mongoose.model<Document>("Document", documentSchema);
-

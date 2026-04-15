@@ -106,11 +106,12 @@ export type DocumentEntity = {
   content: any;
   owner: string;
   collaborators: { user: string; permission: DocPermission }[];
+  shareToken?: string | null;
   createdAt: string;
   updatedAt: string;
 };
 
-export type ListDocsResponse = { owned: DocumentSummary[]; shared: DocumentSummary[] };
+export type ListDocsResponse = { owned: DocumentSummary[] };
 
 export function listDocs() {
   return apiFetch<ListDocsResponse>("/api/docs", { method: "GET" });
@@ -138,10 +139,16 @@ export function deleteDoc(id: string) {
   return apiFetch<{ id: string }>(`/api/docs/${id}`, { method: "DELETE" });
 }
 
-export function shareDoc(id: string, email: string, permission: DocPermission) {
-  return apiFetch<DocumentEntity>(`/api/docs/${id}/share`, {
+export function toggleShare(id: string) {
+  return apiFetch<{ shareToken: string | null; shared: boolean }>(`/api/docs/${id}/share`, {
     method: "POST",
-    body: { email, permission },
+  });
+}
+
+export function getSharedDoc(token: string) {
+  return apiFetch<DocumentEntity>(`/api/docs/shared/${token}`, {
+    method: "GET",
+    auth: false,
   });
 }
 

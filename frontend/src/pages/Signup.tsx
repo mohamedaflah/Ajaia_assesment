@@ -43,19 +43,21 @@ export function SignupPage() {
   }, [mutation.isError, mutation.error]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
-      <div className="mx-auto flex min-h-screen w-full max-w-md items-center px-6">
-        <div className="w-full animate-slide-up rounded-2xl border border-slate-200 bg-white p-8 shadow-lg">
+    <div className="min-h-screen bg-[#fafafa]">
+      <div className="h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+
+      <div className="mx-auto flex min-h-[calc(100vh-6px)] w-full max-w-md items-center px-6">
+        <div className="w-full animate-slide-up border-2 border-slate-900 bg-white p-8 shadow-[6px_6px_0_#0f172a]">
           <div className="flex items-center gap-2 mb-6">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-white">
+            <div className="flex h-9 w-9 items-center justify-center bg-slate-900 text-white">
               <FileText className="h-5 w-5" />
             </div>
-            <span className="text-lg font-bold text-slate-900">DocEditor</span>
+            <span className="text-lg font-black tracking-tight text-slate-900 uppercase">DocEditor</span>
           </div>
 
-          <h1 className="text-xl font-semibold text-slate-900">Create account</h1>
+          <h1 className="text-2xl font-black text-slate-900">Join DocEditor ✨</h1>
           <p className="mt-1 text-sm text-slate-500">
-            Set up your account to start collaborating.
+            Create your account and start collaborating in seconds.
           </p>
 
           <form
@@ -63,15 +65,15 @@ export function SignupPage() {
             onSubmit={handleSubmit((values) => mutation.mutate(values))}
           >
             <div>
-              <label className="text-sm font-medium text-slate-700">Email</label>
+              <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">Email</label>
               <Input className="mt-1.5" autoComplete="email" {...register("email")} />
               {errors.email && (
-                <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
+                <p className="mt-1 text-xs text-red-500 font-medium">{errors.email.message}</p>
               )}
             </div>
 
             <div>
-              <label className="text-sm font-medium text-slate-700">Password</label>
+              <label className="text-sm font-bold text-slate-700 uppercase tracking-wider">Password</label>
               <Input
                 type="password"
                 className="mt-1.5"
@@ -80,22 +82,22 @@ export function SignupPage() {
                 {...register("password")}
               />
               {errors.password && (
-                <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>
+                <p className="mt-1 text-xs text-red-500 font-medium">{errors.password.message}</p>
               )}
             </div>
 
             {errorText && (
-              <p className="text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2">{errorText}</p>
+              <p className="text-sm text-red-600 bg-red-50 border-2 border-red-200 px-3 py-2 font-medium">{errorText}</p>
             )}
 
             <Button type="submit" disabled={mutation.isPending} className="w-full">
-              {mutation.isPending ? "Creating…" : "Create account"}
+              {mutation.isPending ? "Creating…" : "Create account →"}
             </Button>
           </form>
 
           <div className="mt-6 text-center text-sm text-slate-500">
             Already have an account?{" "}
-            <Link className="font-medium text-indigo-600 hover:text-indigo-700 transition-colors" to="/login">
+            <Link className="font-bold text-indigo-600 hover:text-indigo-700 underline underline-offset-2 transition-colors" to="/login">
               Sign in
             </Link>
           </div>

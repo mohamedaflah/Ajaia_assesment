@@ -10,10 +10,19 @@ import { EditorToolbar } from "../components/EditorToolbar";
 import { TipTapEditor } from "../components/TipTapEditor";
 import { ShareModal } from "../components/ShareModal";
 import { ArrowLeft, Trash2, FileText } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../components/ui/dialog";
 
 /* ── Constants ───────────────────────────────────────────── */
 
 const EMPTY_DOC: JSONContent = { type: "doc", content: [{ type: "paragraph" }] };
+const MAX_TITLE_LENGTH = 60;
 
 /* ── Save Indicator ──────────────────────────────────────── */
 
@@ -56,6 +65,7 @@ export function EditorPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [editorInstance, setEditorInstance] = useState<any>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const isNew = id === "new";
 
@@ -213,9 +223,12 @@ export function EditorPage() {
   const showEditor = isNew || (!docQuery.isLoading && !docQuery.isError);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
+    <div className="min-h-screen bg-[#fafafa]">
+      {/* Top accent */}
+      <div className="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+
       {/* Sticky header */}
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/80 backdrop-blur-md">
+      <header className="sticky top-0 z-30 border-b-2 border-slate-900 bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-6 py-3">
           <div className="flex items-center gap-3 min-w-0">
             <Button asChild variant="ghost" size="icon">
@@ -225,16 +238,27 @@ export function EditorPage() {
             </Button>
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-indigo-500 shrink-0" />
-              <Input
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                  scheduleSave();
-                }}
-                onBlur={flushSave}
-                placeholder="Untitled"
-                className="h-8 w-[min(320px,50vw)] border-transparent bg-transparent font-medium focus-visible:border-slate-200 focus-visible:bg-white"
-              />
+              <div className="relative">
+                <Input
+                  value={title}
+                  maxLength={MAX_TITLE_LENGTH}
+                  onChange={(e) => {
+                    const val = e.target.value.slice(0, MAX_TITLE_LENGTH);
+                    setTitle(val);
+                    scheduleSave();
+                  }}
+                  onBlur={flushSave}
+                  placeholder="Give your doc a name…"
+                  className="h-8 w-[min(320px,50vw)] border-transparent bg-transparent font-medium focus-visible:border-slate-200 focus-visible:bg-white pr-12"
+                />
+                {title.length > MAX_TITLE_LENGTH - 15 && (
+                  <span className={`absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-medium ${
+                    title.length >= MAX_TITLE_LENGTH ? "text-red-500" : "text-slate-400"
+                  }`}>
+                    {title.length}/{MAX_TITLE_LENGTH}
+                  </span>
+                )}
+              </div>
             </div>
             <SaveIndicator status={saveStatus} />
           </div>
@@ -242,7 +266,7 @@ export function EditorPage() {
             {docId && docQuery.data ? (
               <ShareModal
                 docId={docId}
-                collaborators={docQuery.data.collaborators ?? []}
+                shareToken={docQuery.data.shareToken}
               />
             ) : null}
             {docId ? (
@@ -251,10 +275,7 @@ export function EditorPage() {
                 size="icon"
                 disabled={deleteMutation.isPending}
                 className="text-slate-400 hover:text-red-500 hover:bg-red-50"
-                onClick={() => {
-                  const ok = window.confirm("Delete this document? This cannot be undone.");
-                  if (ok) deleteMutation.mutate();
-                }}
+                onClick={() => setDeleteOpen(true)}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -296,6 +317,33 @@ export function EditorPage() {
           </div>
         ) : null}
       </main>
+
+      {/* Delete confirmation modal */}
+      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete this document? 🗑️</DialogTitle>
+            <DialogDescription>
+              This will permanently remove "{title || 'Untitled'}" and all its content. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteOpen(false)}>
+              Keep it
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={deleteMutation.isPending}
+              onClick={() => {
+                setDeleteOpen(false);
+                deleteMutation.mutate();
+              }}
+            >
+              {deleteMutation.isPending ? "Deleting…" : "Yes, delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

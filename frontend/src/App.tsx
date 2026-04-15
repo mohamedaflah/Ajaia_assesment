@@ -4,6 +4,7 @@ import { useAuthStore } from "./stores/authStore";
 import { LoginPage } from "./pages/Login";
 import { SignupPage } from "./pages/Signup";
 import { DashboardPage } from "./pages/Dashboard";
+import { SharedViewPage } from "./pages/SharedView";
 
 const EditorPage = lazy(() => import("./pages/Editor").then((m) => ({ default: m.EditorPage })));
 
@@ -15,10 +16,11 @@ function Protected({ children }: { children: React.ReactNode }) {
 
 function EditorFallback() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50/30">
+    <div className="min-h-screen bg-[#fafafa]">
+      <div className="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
       <div className="mx-auto max-w-5xl px-6 py-10">
         <div className="flex items-center gap-3 text-sm text-slate-400">
-          <div className="h-4 w-4 animate-spin rounded-full border-2 border-indigo-400 border-t-transparent" />
+          <div className="h-4 w-4 animate-spin border-2 border-indigo-400 border-t-transparent" />
           Loading editor…
         </div>
       </div>
@@ -35,6 +37,7 @@ export default function App() {
         <Route path="/" element={<Navigate to={token ? "/dashboard" : "/login"} replace />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
+        <Route path="/shared/:token" element={<SharedViewPage />} />
         <Route
           path="/dashboard"
           element={
