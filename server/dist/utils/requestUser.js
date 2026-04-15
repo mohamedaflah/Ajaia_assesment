@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserIdFromReq = getUserIdFromReq;
+exports.getUserIdFromReq = void 0;
 const ApiError_1 = require("./ApiError");
 function getUserIdFromReq(req) {
     const userId = req?.user?.userId;
@@ -8,4 +8,5 @@ function getUserIdFromReq(req) {
         throw new ApiError_1.ApiError(401, "Unauthorized");
     return userId;
 }
+exports.getUserIdFromReq = getUserIdFromReq;
 //# sourceMappingURL=requestUser.js.map

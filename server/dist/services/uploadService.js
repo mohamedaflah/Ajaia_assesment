@@ -3,9 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createDocFromUpload = createDocFromUpload;
-exports.toggleShareLink = toggleShareLink;
-exports.getDocByShareToken = getDocByShareToken;
+exports.getDocByShareToken = exports.toggleShareLink = exports.createDocFromUpload = void 0;
 const crypto_1 = __importDefault(require("crypto"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const ApiError_1 = require("../utils/ApiError");
@@ -136,6 +134,7 @@ async function createDocFromUpload(params) {
     });
     return created.toObject();
 }
+exports.createDocFromUpload = createDocFromUpload;
 /**
  * Toggle public sharing for a document.
  */
@@ -155,6 +154,7 @@ async function toggleShareLink(documentId, ownerId) {
         return { shareToken: token, shared: true };
     }
 }
+exports.toggleShareLink = toggleShareLink;
 /**
  * Get a document by its public share token. No auth required.
  */
@@ -166,4 +166,5 @@ async function getDocByShareToken(token) {
         throw new ApiError_1.ApiError(404, "Document not found or link expired");
     return doc;
 }
+exports.getDocByShareToken = getDocByShareToken;
 //# sourceMappingURL=uploadService.js.map

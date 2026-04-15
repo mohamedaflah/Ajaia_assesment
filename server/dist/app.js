@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createApp = createApp;
+exports.createApp = void 0;
 const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const env_1 = require("./config/env");
@@ -28,4 +28,5 @@ function createApp() {
     app.use(errorMiddleware_1.errorHandler);
     return app;
 }
+exports.createApp = createApp;
 //# sourceMappingURL=app.js.map

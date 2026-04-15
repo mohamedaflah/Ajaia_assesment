@@ -3,12 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listDocsForUser = listDocsForUser;
-exports.createDoc = createDoc;
-exports.getDocById = getDocById;
-exports.updateDoc = updateDoc;
-exports.renameDoc = renameDoc;
-exports.deleteDoc = deleteDoc;
+exports.deleteDoc = exports.renameDoc = exports.updateDoc = exports.getDocById = exports.createDoc = exports.listDocsForUser = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const ApiError_1 = require("../utils/ApiError");
 const Document_1 = require("../models/Document");
@@ -36,6 +31,7 @@ async function listDocsForUser(userId) {
         .lean();
     return { owned };
 }
+exports.listDocsForUser = listDocsForUser;
 async function createDoc(userId, input) {
     const created = await Document_1.DocumentModel.create({
         title: input.title.trim(),
@@ -45,6 +41,7 @@ async function createDoc(userId, input) {
     });
     return created.toObject();
 }
+exports.createDoc = createDoc;
 async function getDocById(documentId, userId) {
     const perm = await getPermission(documentId, userId);
     if (perm === "none")
@@ -54,6 +51,7 @@ async function getDocById(documentId, userId) {
         throw new ApiError_1.ApiError(404, "Document not found");
     return doc;
 }
+exports.getDocById = getDocById;
 async function updateDoc(documentId, userId, input) {
     const perm = await getPermission(documentId, userId);
     if (perm !== "owner" && perm !== "write")
@@ -70,9 +68,11 @@ async function updateDoc(documentId, userId, input) {
         throw new ApiError_1.ApiError(404, "Document not found");
     return updated;
 }
+exports.updateDoc = updateDoc;
 async function renameDoc(documentId, userId, title) {
     return updateDoc(documentId, userId, { title });
 }
+exports.renameDoc = renameDoc;
 async function deleteDoc(documentId, userId) {
     const perm = await getPermission(documentId, userId);
     if (perm !== "owner")
@@ -82,4 +82,5 @@ async function deleteDoc(documentId, userId) {
         throw new ApiError_1.ApiError(404, "Document not found");
     return { id: documentId };
 }
+exports.deleteDoc = deleteDoc;
 //# sourceMappingURL=docService.js.map

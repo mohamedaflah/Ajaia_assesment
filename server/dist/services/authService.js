@@ -3,8 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginWithEmailPassword = loginWithEmailPassword;
-exports.signupWithEmailPassword = signupWithEmailPassword;
+exports.signupWithEmailPassword = exports.loginWithEmailPassword = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const ApiError_1 = require("../utils/ApiError");
 const jwt_1 = require("../utils/jwt");
@@ -19,6 +18,7 @@ async function loginWithEmailPassword(email, password) {
     const token = (0, jwt_1.generateToken)(String(user._id));
     return { token };
 }
+exports.loginWithEmailPassword = loginWithEmailPassword;
 async function signupWithEmailPassword(email, password) {
     const normalizedEmail = email.toLowerCase().trim();
     const existing = await User_1.UserModel.findOne({ email: normalizedEmail }).lean();
@@ -29,4 +29,5 @@ async function signupWithEmailPassword(email, password) {
     const token = (0, jwt_1.generateToken)(String(created._id));
     return { token };
 }
+exports.signupWithEmailPassword = signupWithEmailPassword;
 //# sourceMappingURL=authService.js.map
