@@ -1,44 +1,29 @@
 {
   "compilerOptions": {
-    /* =========================
-       FILE STRUCTURE
-    ========================= */
     "rootDir": "./src",
     "outDir": "./dist",
 
-    /* =========================
-       ENVIRONMENT
-    ========================= */
     "target": "ES2022",
     "module": "CommonJS",
     "moduleResolution": "Node",
+
+    "ignoreDeprecations": "6.0",
+
     "lib": ["ES2022"],
     "types": ["node"],
 
-    /* =========================
-       OUTPUT
-    ========================= */
     "sourceMap": true,
     "declaration": false,
 
-    /* =========================
-       TYPE SAFETY
-    ========================= */
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
-    /* =========================
-       COMPATIBILITY (IMPORTANT)
-    ========================= */
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
 
-    /* =========================
-       BUILD STABILITY (IMPORTANT)
-    ========================= */
     "forceConsistentCasingInFileNames": true
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "**/*.test.ts", "**/__tests__"]
 }
