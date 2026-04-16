@@ -104,7 +104,7 @@ export function ShareModal(props: {
           ) : (
             <>
               {/* No link yet */}
-              <div className="border-2 border-dashed border-slate-300 bg-white px-4 py-6 text-center">
+              <div className="border-2 border-dashed border-slate-300 bg-[#f7f7f9] px-4 py-6 text-center">
                 <Link2 className="h-8 w-8 text-slate-300 mx-auto mb-2" />
                 <p className="text-sm text-slate-500">
                   No public link yet. Generate one to share this document.

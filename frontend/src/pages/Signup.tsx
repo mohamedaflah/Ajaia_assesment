@@ -43,11 +43,11 @@ export function SignupPage() {
   }, [mutation.isError, mutation.error]);
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-[#f0f0f3]">
       <div className="h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
 
       <div className="mx-auto flex min-h-[calc(100vh-6px)] w-full max-w-md items-center px-6">
-        <div className="w-full animate-slide-up border-2 border-slate-900 bg-white p-8 shadow-[6px_6px_0_#0f172a]">
+        <div className="w-full animate-slide-up border-2 border-slate-900 bg-[#f7f7f9] p-8 shadow-[6px_6px_0_#0f172a]">
           <div className="flex items-center gap-2 mb-6">
             <div className="flex h-9 w-9 items-center justify-center bg-slate-900 text-white">
               <FileText className="h-5 w-5" />

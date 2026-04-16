@@ -42,7 +42,7 @@ function RenameInput(props: {
           if (e.key === "Enter") handleSubmit();
           if (e.key === "Escape") props.onDone();
         }}
-        className="flex-1 border-2 border-indigo-500 bg-white px-2 py-0.5 text-sm text-slate-900 outline-none focus:border-indigo-600"
+        className="flex-1 border-2 border-indigo-500 bg-[#fafafc] px-2 py-0.5 text-sm text-slate-900 outline-none focus:border-indigo-600"
         disabled={mutation.isPending}
       />
       <button
@@ -82,7 +82,7 @@ export function DocumentList(props: {
       </div>
 
       {props.docs.length === 0 ? (
-        <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 bg-white px-4 py-10 text-center">
+        <div className="flex flex-col items-center justify-center border-2 border-dashed border-slate-300 bg-[#f7f7f9] px-4 py-10 text-center">
           <FileText className="h-8 w-8 text-slate-300 mb-2" />
           <p className="text-sm text-slate-400">{props.emptyText}</p>
         </div>

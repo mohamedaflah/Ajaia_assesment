@@ -3,7 +3,6 @@ import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Extension } from "@tiptap/react";
-import ListItem from "@tiptap/extension-list-item";
 import { useEffect, useRef } from "react";
 
 // Custom extension to add fontSize attribute to TextStyle
@@ -43,11 +42,7 @@ export function TipTapEditor(props: {
         heading: {
           levels: [1, 2, 3],
         },
-        // Let StarterKit handle lists, but override listItem for better behavior
-        listItem: false,
       }),
-      // Explicit ListItem with better Enter key handling
-      ListItem,
       Underline,
       TextStyle,
       FontSize,
@@ -56,13 +51,17 @@ export function TipTapEditor(props: {
     editorProps: {
       attributes: {
         class:
-          "prose-editor min-h-[60vh] border-2 border-slate-300 bg-white px-6 py-4 text-slate-800 focus:outline-none transition-all focus-within:border-indigo-500 focus-within:shadow-[3px_3px_0_#6366f1]",
+          "prose-editor min-h-[60vh] border-2 border-slate-300 bg-[#fafafc] px-6 py-4 text-slate-800 focus:outline-none transition-all focus-within:border-indigo-500 focus-within:shadow-[3px_3px_0_#6366f1]",
       },
     },
     onUpdate: ({ editor }) => {
       // Don't bubble up updates that we triggered ourselves via setContent
       if (isExternalUpdate.current) return;
-      props.onUpdate(editor.getJSON());
+      const json = editor.getJSON();
+      // Keep lastSetContentRef in sync so the useEffect below doesn't
+      // re-call setContent when the parent echoes this same content back.
+      lastSetContentRef.current = JSON.stringify(json);
+      props.onUpdate(json);
     },
   });
 

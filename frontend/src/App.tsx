@@ -16,7 +16,7 @@ function Protected({ children }: { children: React.ReactNode }) {
 
 function EditorFallback() {
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-[#f0f0f3]">
       <div className="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
       <div className="mx-auto max-w-5xl px-6 py-10">
         <div className="flex items-center gap-3 text-sm text-slate-400">

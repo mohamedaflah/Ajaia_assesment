@@ -39,12 +39,12 @@ export function DashboardPage() {
   const totalOwned = docsQuery.data?.owned.length ?? 0;
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-[#f0f0f3]">
       {/* Top accent band */}
       <div className="h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
 
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b-2 border-slate-900 bg-white">
+      <header className="sticky top-0 z-30 border-b-2 border-slate-900 bg-[#f7f7f9]">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center bg-slate-900 text-white border-2 border-slate-900">

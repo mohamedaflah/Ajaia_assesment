@@ -6,6 +6,8 @@
   --accent-light: #818cf8;
   --border: #1e293b;
   --border-light: #cbd5e1;
+  --bg: #f0f0f3;
+  --surface: #f7f7f9;
 }
 
 html,
@@ -19,7 +21,7 @@ body {
   font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #fafafa;
+  background: var(--bg);
 }
 
 /* ── Animations ───────────────────────────────────────────── */
@@ -68,7 +70,7 @@ body {
 /* ── Neo-Brutalist Card ──────────────────────────────────── */
 
 .card-brutal {
-  background: white;
+  background: var(--surface);
   border: 2px solid var(--border);
   box-shadow: 4px 4px 0 var(--border);
   transition: all 0.15s ease;
@@ -139,25 +141,30 @@ body {
   color: #334155;
 }
 
-.tiptap ul {
-  list-style-type: disc;
+.tiptap ul,
+.tiptap ol {
   padding-left: 1.5em;
   margin: 0.5em 0;
+}
+
+.tiptap ul {
+  list-style-type: disc !important;
 }
 
 .tiptap ol {
-  list-style-type: decimal;
-  padding-left: 1.5em;
-  margin: 0.5em 0;
+  list-style-type: decimal !important;
 }
 
 .tiptap li {
+  display: list-item !important;
   margin: 0.2em 0;
   line-height: 1.65;
 }
 
-.tiptap li > p {
+.tiptap li p {
+  display: block;
   margin: 0;
+  padding: 0;
 }
 
 .tiptap strong {

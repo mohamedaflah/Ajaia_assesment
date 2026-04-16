@@ -223,12 +223,12 @@ export function EditorPage() {
   const showEditor = isNew || (!docQuery.isLoading && !docQuery.isError);
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
+    <div className="min-h-screen bg-[#f0f0f3]">
       {/* Top accent */}
       <div className="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
 
       {/* Sticky header */}
-      <header className="sticky top-0 z-30 border-b-2 border-slate-900 bg-white">
+      <header className="sticky top-0 z-30 border-b-2 border-slate-900 bg-[#f7f7f9]">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-6 py-3">
           <div className="flex items-center gap-3 min-w-0">
             <Button asChild variant="ghost" size="icon">

@@ -179,7 +179,7 @@ export function EditorToolbar(props: { editor: Editor | null }) {
   if (!e) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-1 border-2 border-slate-300 bg-white p-1.5">
+    <div className="flex flex-wrap items-center gap-1 border-2 border-slate-300 bg-[#f7f7f9] p-1.5">
       {/* Text formatting */}
       <ToolbarButton
         onClick={() => e.chain().focus().toggleBold().run()}
