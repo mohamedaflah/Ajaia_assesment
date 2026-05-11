@@ -5,5 +5,6 @@ export async function connectDb() {
   mongoose.set("strictQuery", true);
   if (!env.MONGO_URI) throw new Error("MONGO_URI is required");
   await mongoose.connect(env.MONGO_URI);
+  console.log("Connected to MongoDB");
 }
 
