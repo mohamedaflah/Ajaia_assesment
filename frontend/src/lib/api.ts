@@ -1,7 +1,7 @@
 import { useAuthStore } from "../stores/authStore";
 import axios, { AxiosError } from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL??"https://ajaia-assesment-a8w4.vercel.app"
 
 type ApiEnvelope<T> =
   | { success: true; message: string; data: T }
