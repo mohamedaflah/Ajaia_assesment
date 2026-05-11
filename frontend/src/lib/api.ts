@@ -1,7 +1,7 @@
 import { useAuthStore } from "../stores/authStore";
 import axios, { AxiosError } from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "https://ajaia-assesment.onrender.com";
+const API_URL = import.meta.env.VITE_API_URL
 
 type ApiEnvelope<T> =
   | { success: true; message: string; data: T }
