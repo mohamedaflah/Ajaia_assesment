@@ -24,6 +24,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       else localStorage.removeItem(TOKEN_KEY);
     } catch {
       // ignore storage failures
+      console.log("Error setting token");
     }
     set({ token });
   },
